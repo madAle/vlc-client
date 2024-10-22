@@ -11,6 +11,10 @@ module VLC
         state: /\( state (.*) \)/ ,
       }.freeze
 
+      def frame
+        connection.write "frame"
+      end
+
       # Plays media or resumes playback
       #
       # @overload play(media)
