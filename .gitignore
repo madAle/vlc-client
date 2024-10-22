@@ -21,3 +21,4 @@ Guardfile
 trials
 .ruby-*
 .\#*
+.idea
