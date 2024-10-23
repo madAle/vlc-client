@@ -99,7 +99,7 @@ module VLC
                       :err => 'NUL')
       when /darwin/ =~ RUBY_PLATFORM
         Process.spawn('/Applications/VLC.app/Contents/MacOS/VLC',
-                      '--extraintf', 'rc', '--rc-host', "#{@host}:#{@port}",
+                      '--extraintf', 'rc', '--sub-filter', 'logo{opacity=60}', '--logo-file', '/Users/ale/source/stommpy/smart/hardware/gate/test_bed/wrong_area.png', '--rc-host', "#{@host}:#{@port}",
                       :pgroup => detached,
                       :in => '/dev/null',
                       :out => '/dev/null',
