@@ -12,10 +12,11 @@ module VLC
     # @param [Boolean] headless if true VLC media player will run in headless mode.
     #                   i.e. without a graphical interface. Defaults to false
     #
-    def initialize(host = 'localhost', port = 9595, headless = false)
+    def initialize(host = 'localhost', port = 9595, headless = false, vlc_process_args: [])
       @host, @port, @headless = host, port, headless
       @pid = NullObject.new
       @deamon = false
+      @vlc_process_args = vlc_process_args || []
     end
 
     # Queries if VLC is running
@@ -89,24 +90,26 @@ module VLC
     private
 
     def process_spawn(detached)
+      process_args = ['--extraintf', 'rc', '--rc-host', "#{@host}:#{@port}"].concat(@vlc_process_args)
+      p process_args
       case
       when ENV['OS'] == 'Windows_NT'
         # We don't have pgroup, and should write to NUL in case the env doesn't simulate /dev/null
         Process.spawn(headless? ? 'cvlc' : 'vlc',
-                      '--extraintf', 'rc', '--rc-host', "#{@host}:#{@port}",
+                      *process_args,
                       :in => 'NUL',
                       :out => 'NUL',
                       :err => 'NUL')
       when /darwin/ =~ RUBY_PLATFORM
         Process.spawn('/Applications/VLC.app/Contents/MacOS/VLC',
-                      '--extraintf', 'rc', '--sub-filter', 'logo{opacity=60}', '--logo-file', '/Users/ale/source/stommpy/smart/hardware/gate/test_bed/wrong_area.png', '--rc-host', "#{@host}:#{@port}",
+                      *process_args,
                       :pgroup => detached,
                       :in => '/dev/null',
                       :out => '/dev/null',
                       :err => '/dev/null')
       else
         Process.spawn(headless? ? 'cvlc' : 'vlc',
-                      '--extraintf', 'rc', '--rc-host', "#{@host}:#{@port}",
+                      *process_args,
                       :pgroup => detached,
                       :in => '/dev/null',
                       :out => '/dev/null',

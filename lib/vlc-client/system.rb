@@ -31,7 +31,7 @@ module VLC
       args = NullObject.Null?(args)
       opts = args.extract_options!
 
-      server = VLC::Server.new
+      server = VLC::Server.new vlc_process_args: opts[:vlc_process_args]
       server.headless = opts.fetch(:headless, false)
 
       if args.size == 2
